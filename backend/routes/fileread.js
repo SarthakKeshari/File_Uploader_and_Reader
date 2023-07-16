@@ -5,12 +5,10 @@ var router = express.Router();
 var fs = require('fs');
 
 router.post('/', function(req, res) {
-  const newpath = __dirname + "/files/";
-  console.log(__dirname);
   const file = req.files.file;
   const filename = file.name;
  
-  file.mv(`${newpath}${filename}`, (err) => {
+  file.mv(`${filename}`, (err) => {
     if (err) {
       console.log(err)
       res.status(500).send({ message: "File upload failed", code: 500 });
@@ -33,14 +31,14 @@ router.post('/', function(req, res) {
 
   // Putting timeout for delaying delete but ain't required.
   setTimeout(() => {
-    fs.unlink(`${newpath}${filename}`, (err) => {
+    fs.unlink(`${filename}`, (err) => {
       if (err) throw err;
       console.log(`${filename} was deleted`);
     }); 
   }, 1000)
 
   const readTxt = () => {
-    fs.readFile(`${newpath}${filename}`, 'utf-8', (err, data) => {
+    fs.readFile(`${filename}`, 'utf-8', (err, data) => {
       if (err) {
         console.error(err);
         return res.status(500).json({ message: 'Error reading file' });
@@ -57,7 +55,7 @@ router.post('/', function(req, res) {
   }
 
   const readDoc = () => {
-    fs.readFile(`${newpath}${filename}`, 'binary', (err, data) => {
+    fs.readFile(`${filename}`, 'binary', (err, data) => {
       if (err) {
         console.error(err);
         return res.status(500).json({ message: 'Error reading file' });
@@ -79,7 +77,7 @@ router.post('/', function(req, res) {
   }
 
   const readXls = () => {
-    const workbook = XLSX.readFile(`${newpath}${filename}`);
+    const workbook = XLSX.readFile(`${filename}`);
     
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
